@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Movie Reviews{% endblock %}</title>
+    {% load static %}
+<link rel="stylesheet" href="/static/moviereviews/css/style.css?emergency=1" />
+    {% block extra_css %}{% endblock %}
+    <style></style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="site-title">MovieReviews</a>
+        
+        <!-- Search Bar in Navigation -->
+        <div class="search-bar">
+            <form action="{% url 'movie_search' %}" method="get">
+                <input type="text" name="q" placeholder="Search movies..." value="{{ request.GET.q }}">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        
+        <div class="nav-links">
+            <a href="{% url 'movie_list' %}">All Movies</a>
+            <a href="{% url 'leaderboard' %}">Top Reviewers</a>
+        </div>
+        <div class="auth-links">
+            {% if user.is_authenticated %}
+                <a href="{% url 'add_movie' %}">Add Movie</a>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <span class="divider">|</span>
+                <a href="{% url 'signup' %}">Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Single messages block -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+                <button type="button" class="close" onclick="this.parentElement.style.display='none'">&times;</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}
+        <!-- Content will be overridden by child templates -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        &copy; {% now "Y" %} MovieReviews. All rights reserved.
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

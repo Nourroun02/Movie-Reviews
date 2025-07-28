@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="search-results-container">
+    <div class="search-results-header">
+        <h2>Results for "{{ query }}"</h2>
+    </div>
+
+    {% if movies %}
+        <ul class="search-results-list">
+            {% for movie in movies %}
+            <li class="search-results-item">
+                <a href="{% url 'movie_detail' movie.id %}" class="search-results-link">
+                    <div class="movie-title">{{ movie.title }}</div>
+                    <div>
+                        <span class="movie-year">{{ movie.release_date.year }}</span> - 
+                        <span class="movie-genre">{{ movie.genre }}</span>
+                    </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="results-count">Found {{ results_count }} results</div>
+    {% else %}
+        <div class="no-results">No movies found matching your search.</div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-container">
+    <h2 class="auth-title">Create Account</h2>
+    <form method="post" class="auth-form">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+        <div class="error-message">
+            Please correct the errors below.
+        </div>
+        {% endif %}
+
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+            <div class="field-errors">
+                {% for error in field.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+<button type="submit" class="btn btn-primary">
+    Create Account
+</button>
+        <div class="auth-links">
+            <span>Already have an account? <a href="{% url 'login' %}">Log in</a></span>
+        </div>
+    </form>
+</div>
+{% endblock content %}  <!-- Note: named endblock -->

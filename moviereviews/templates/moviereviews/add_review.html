@@ -1,0 +1,369 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="review-form-container">
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <i class="icon"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="review-card">
+        <div class="review-header">
+            <h2>Submit Your Review</h2>
+            <p>Share your thoughts about this movie</p>
+        </div>
+        
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            <i class="icon"></i>
+            Please correct the errors below.
+        </div>
+        {% endif %}
+        
+        <form method="post" class="review-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>Movie</label>
+                <div class="select-wrapper">
+                    {{ form.movie }}
+                    <i class="select-icon"></i>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Your Rating</label>
+                <div class="rating-container">
+                    <div class="rating-stars">
+                        {% for i in "12345" %}
+                        <span class="star" data-value="{{ i }}">★</span>
+                        {% endfor %}
+                        {{ form.rating.as_hidden }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Review</label>
+                {{ form.text }}
+            </div>
+            
+            <button type="submit" class="submit-btn">
+                <span class="btn-text">Submit Review</span>
+                <i class="btn-icon"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+/* Review Form Container */
+.review-form-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.review-card {
+    background: var(--secondary-color);
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.review-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.review-header h2 {
+    font-size: 2.2rem;
+    color: var(--highlight-color);
+    margin-bottom: 0.5rem;
+}
+
+.review-header p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 2rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+.select-wrapper {
+    position: relative;
+}
+
+.select-wrapper select {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    appearance: none;
+    transition: var(--transition);
+}
+
+/* Make sure select options are visible */
+.select-wrapper select option {
+    background: var(--secondary-color);
+    color: var(--text-primary);
+}
+
+.select-wrapper select:focus {
+    outline: none;
+    border-color: var(--highlight-color);
+    box-shadow: 0 0 0 3px rgba(245, 197, 24, 0.2);
+}
+
+.select-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid var(--text-muted);
+    pointer-events: none;
+}
+
+textarea {
+    width: 100%;
+    min-height: 150px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    resize: vertical;
+    transition: var(--transition);
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--highlight-color);
+    box-shadow: 0 0 0 3px rgba(245, 197, 24, 0.2);
+}
+
+/* Rating System */
+.rating-container {
+    margin-top: 1rem;
+}
+
+.rating-stars {
+    display: flex;
+    gap: 8px;
+}
+
+.star {
+    font-size: 2.5rem;
+    color: var(--border-color);
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.star:hover,
+.star.active {
+    color: var(--star-color);
+    transform: scale(1.2);
+}
+
+/* Submit Button */
+.submit-btn {
+    background: var(--accent-color);
+    color: var(--text-primary);
+    padding: 14px 28px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--hover-color);
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s ease;
+}
+
+.submit-btn:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(229, 9, 20, 0.3);
+}
+
+.btn-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M2.01 21L23 12 2.01 3 2 10l15 2-15 2z'/%3E%3C/svg%3E");
+    background-size: contain;
+    transition: transform 0.3s ease;
+}
+
+.submit-btn:hover .btn-icon {
+    transform: translateX(3px);
+}
+
+/* Alerts */
+.alert {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1rem;
+    border-left: 4px solid;
+}
+
+.alert i.icon {
+    width: 24px;
+    height: 24px;
+    background-size: contain;
+}
+
+.alert-success {
+    background-color: rgba(46, 125, 50, 0.1);
+    color: var(--text-primary);
+    border-left-color: #2e7d32;
+}
+
+.alert-success i.icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232e7d32'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+}
+
+.alert-error {
+    background-color: rgba(198, 40, 40, 0.1);
+    color: var(--text-primary);
+    border-left-color: #c62828;
+}
+
+.alert-error i.icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c62828'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E");
+}
+
+.alert-danger {
+    background-color: rgba(230, 81, 0, 0.1);
+    color: var(--text-primary);
+    border-left-color: #e65100;
+}
+
+.alert-danger i.icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e65100'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E");
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .review-card {
+        padding: 1.8rem;
+    }
+    
+    .review-header h2 {
+        font-size: 1.9rem;
+    }
+    
+    .star {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .review-card {
+        padding: 1.5rem;
+    }
+    
+    .rating-stars {
+        gap: 5px;
+    }
+    
+    .star {
+        font-size: 2rem;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('id_rating');
+    
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const value = this.getAttribute('data-value');
+            ratingInput.value = value;
+            
+            stars.forEach(s => {
+                s.classList.toggle('active', 
+                    s.getAttribute('data-value') <= value);
+            });
+        });
+        
+        star.addEventListener('mouseover', function() {
+            const hoverValue = this.getAttribute('data-value');
+            stars.forEach(s => {
+                s.classList.toggle('hover', 
+                    s.getAttribute('data-value') <= hoverValue);
+            });
+        });
+        
+        star.addEventListener('mouseout', function() {
+            stars.forEach(s => s.classList.remove('hover'));
+        });
+    });
+    
+    // Initialize with existing value if any
+    if (ratingInput.value) {
+        stars.forEach(s => {
+            s.classList.toggle('active', 
+                s.getAttribute('data-value') <= ratingInput.value);
+        });
+    }
+});
+</script>
+{% endblock %}

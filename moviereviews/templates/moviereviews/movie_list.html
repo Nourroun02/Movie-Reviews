@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="movies-grid">
+    {% for movie in movies %}  <!-- Uses paginated movies -->
+    <div class="movie-card">
+        <a href="{% url 'movie_detail' movie.id %}">
+            <h3>{{ movie.title }}</h3>
+            <div class="rating">
+                {% if movie.review_count > 0 %}
+                    ★ {{ movie.average_rating|floatformat:1 }} ({{ movie.review_count }})
+                {% else %}
+                    No reviews yet
+                {% endif %}
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination controls -->
+<div class="pagination">
+    {% if movies.has_previous %}
+        <a href="?page=1" class="btn">First</a>
+        <a href="?page={{ movies.previous_page_number }}" class="btn">Previous</a>
+    {% endif %}
+    
+    <span class="current">
+        Page {{ movies.number }} of {{ movies.paginator.num_pages }}
+    </span>
+    
+    {% if movies.has_next %}
+        <a href="?page={{ movies.next_page_number }}" class="btn">Next</a>
+        <a href="?page={{ movies.paginator.num_pages }}" class="btn">Last</a>
+    {% endif %}
+</div>
+{% endblock %}

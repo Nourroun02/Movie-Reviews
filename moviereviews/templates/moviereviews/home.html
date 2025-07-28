@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load movie_filters %}
+{% load static %}
+
+{% block content %}
+
+<section class="hero">
+    <h1>Welcome to Movie Reviews</h1>
+    <p>Discover, review, and share your favorite films</p>
+</section>
+
+<section class="content-section">
+    <h2 class="section-title">Latest Movies</h2>
+    
+    {% if movies %}
+    <div class="movies-grid">
+        {% for movie in movies %}
+        <div class="movie-card">
+            <a href="{% url 'movie_detail' movie.id %}">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <p class="movie-year">{{ movie.release_date|date:"Y" }}</p>
+                <div class="rating">
+                    {% if movie.review_count > 0 %}
+                        <div class="star-rating">
+                            <!-- Full stars -->
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= movie.average_rating|floatformat:0|add:"0" %}
+                                    <span class="star full">★</span>
+                                {% else %}
+                                    <span class="star empty">☆</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="rating-value">{{ movie.average_rating|floatformat:1 }}/5</span>
+                        <span class="review-count">({{ movie.review_count }} review{{ movie.review_count|pluralize }})</span>
+                    {% else %}
+                        <p class="no-reviews">No reviews yet</p>
+                    {% endif %}
+                </div>
+            </a>
+            
+            <!-- Updated Review Button with proper URL -->
+            <a href="{% url 'add_review' movie.id %}" class="review-btn">Add Review</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No movies yet. <a href="{% url 'add_movie' %}">Add the first one!</a></p>
+    </div>
+    {% endif %}
+
+    <!-- Pagination controls -->
+    <div class="pagination">
+        {% if movies.has_previous %}
+            <a href="?page=1" class="btn">First</a>
+            <a href="?page={{ movies.previous_page_number }}" class="btn">Previous</a>
+        {% endif %}
+        
+        <span class="current">
+            Page {{ movies.number }} of {{ movies.paginator.num_pages }}
+        </span>
+        
+        {% if movies.has_next %}
+            <a href="?page={{ movies.next_page_number }}" class="btn">Next</a>
+            <a href="?page={{ movies.paginator.num_pages }}" class="btn">Last</a>
+        {% endif %}
+    </div>
+
+    <div class="action-buttons">
+        <a href="{% url 'add_movie' %}" class="btn btn-secondary">Add New Movie</a>
+    </div>
+</section>
+
+{% endblock %}

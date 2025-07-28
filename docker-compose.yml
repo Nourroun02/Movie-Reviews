@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  db:
+  
+    image: postgres:14
+    container_name: movie_db
+    environment:
+      POSTGRES_DB: moviedb
+      POSTGRES_USER: movieuser
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U movieuser -d moviedb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  web:
+    build: .
+    container_name: movie_web
+    command: python manage.py runserver 0.0.0.0:8001
+    volumes:
+      - .:/app
+      - ./moviereviews/static:/app/moviereviews/static
+      - ./static:/app/static
+      - ./staticfiles:/app/staticfiles
+    ports:
+      - "8001:8001"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgres://movieuser:secret@db:5432/moviedb
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    name: movie_network
+    driver: bridge

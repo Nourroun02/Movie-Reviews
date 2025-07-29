@@ -1,0 +1,12 @@
+# .dockerignore
+.git
+.env
+*.pyc
+__pycache__
+*.sqlite3
+*.swp
+*.log
+/venv
+/local_settings.py
+/media
+/staticfiles

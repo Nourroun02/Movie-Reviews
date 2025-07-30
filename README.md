@@ -28,7 +28,7 @@ Tech Stack: Django · Python · Docker · Nginx · JavaScript · HTML5 · CSS3
 -Responsive UI with HTML5, CSS3, and JavaScript
 -User-friendly review system with ratings
 
- #DevOps & CI/CD Ready:
+ # DevOps & CI/CD Ready:
 
 -Pre-configured for GitHub Actions / GitLab CI
 
